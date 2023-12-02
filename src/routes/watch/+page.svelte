@@ -46,7 +46,7 @@
 				height: "100%",
 				width: "100%",
 				videoId: initialVideoId,
-				playerVars: { autoplay: 0 },
+				playerVars: { autoplay: 1 },
 				events: {
 					"onReady": onPlayerReady,
 				}
@@ -54,19 +54,21 @@
 		}
 
 		function onPlayerReady(event) {
-			prepareButton.removeAttribute("hidden");
 
 			getSyncedServerTime().then(syncedServerTime => {
 				console.log(syncedServerTime);
 
 				const now = new Date().getTime();
 				let timeToWait = startTime - syncedServerTime.getTime();
+				prepareButton.removeAttribute("hidden");
 
 				setTimeout(() => {
 					event.target.playVideo();
 					event.target.seekTo(0);
 					event.target.unMute();
 					event.target.g.style.display = "block";
+					event.target.g.style["z-index"] = "3";
+
 					setTimeout(() => {
 						event.target.seekTo(2)
 					}, 2000)
@@ -110,19 +112,37 @@
 </svelte:head>
 
 <style>
-	#youtube-player {
+	#youtube-player, #cover-div {
 		width: 100%;
 		height: 100%;
 		position: absolute;
 		left: 0; right: 0; top: 0; bottom: 0;
+		background: black;
+	}
+
+	#cover-div {
+		display: flex;
+		flex-direction: column;
+		color: white;
+		z-index: 2
+	}
+
+	#countdown {
+		font-size: 4em;
+		display: flex;
+		align-content: center;
+		justify-content: center;
+		font-family: monospace;
+		height: 3em;
 	}
 </style>
 
-<div id="countdown">
-	<p bind:this={countdownElement}></p>
+<div id="cover-div">
+	<p id="countdown" bind:this={countdownElement}></p>
+	<button bind:this={prepareButton} on:click={() => prepare()} hidden>button</button>
+	<p bind:this={thanks} hidden>thank you!</p>
 </div>
 
-<button bind:this={prepareButton} on:click={() => prepare()} hidden>button</button>
-<p bind:this={thanks} hidden>thank you!</p>
 
-<div id={ytPlayerId} style="display: none" playsinline></div>
+
+<div id={ytPlayerId}></div>
