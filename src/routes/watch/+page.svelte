@@ -64,14 +64,9 @@
 
 				setTimeout(() => {
 					event.target.playVideo();
-					event.target.seekTo(0);
 					event.target.unMute();
 					event.target.g.style.display = "block";
 					event.target.g.style["z-index"] = "3";
-
-					setTimeout(() => {
-						event.target.seekTo(2)
-					}, 2000)
 				}, timeToWait);
 
 				const countdown = setInterval(() => {
@@ -101,6 +96,7 @@
 		player.playVideo();
 		player.mute();
 		setTimeout(() => {
+			player.seekTo(0);
 			player.pauseVideo();
 		}, 1000);
 		thanks.removeAttribute("hidden");
@@ -122,24 +118,31 @@
 
 	#cover-div {
 		display: flex;
+		align-items: center;
+		justify-content: center;
 		flex-direction: column;
 		color: white;
-		z-index: 2
+		z-index: 2;
+		margin: auto;
 	}
 
 	#countdown {
 		font-size: 4em;
 		display: flex;
-		align-content: center;
+		align-items: center;
 		justify-content: center;
 		font-family: monospace;
-		height: 3em;
+	}
+
+	button {
+		width: 16ch;
+		padding: 1em;
 	}
 </style>
 
 <div id="cover-div">
 	<p id="countdown" bind:this={countdownElement}></p>
-	<button bind:this={prepareButton} on:click={() => prepare()} hidden>button</button>
+	<button bind:this={prepareButton} on:click={() => prepare()} hidden>please press me</button>
 	<p bind:this={thanks} hidden>thank you!</p>
 </div>
 
