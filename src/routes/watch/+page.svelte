@@ -58,6 +58,7 @@
 			getSyncedServerTime().then(syncedServerTime => {
 				console.log(syncedServerTime);
 				setTimeout(() => {
+					event.target.seekTo(0);
 					event.target.unMute();
 					event.target.playVideo();
 					event.target.g.style.display = "block";
@@ -81,7 +82,6 @@
 		player.mute();
 		player.playVideo();
 		setTimeout(() => {
-			player.seekTo(0);
 			player.pauseVideo();
 		}, 1000);
 		thanks.removeAttribute("hidden");
