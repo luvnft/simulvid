@@ -33,6 +33,7 @@
 	}
 
 	export let player;
+	export let prepareButton: HTMLButtonElement;
 	export let initialVideoId = params.get("v") || "dQw4w9WgXcQ";
 	const startTime = Number(params.get("t")) || new Date().getTime() + 5000;
 
@@ -52,6 +53,8 @@
 		}
 
 		function onPlayerReady(event) {
+			prepareButton.removeAttribute("hidden");
+
 			getSyncedServerTime().then(syncedServerTime => {
 				console.log(syncedServerTime);
 				setTimeout(() => {
@@ -66,7 +69,15 @@
 		} else {
 			window.onYouTubeIframeAPIReady = load;
 		}
-	})
+	});
+
+
+	export let thanks;
+	function prepare() {
+		player.playVideo();
+		player.pauseVideo();
+		thanks.removeAttribute("hidden");
+	}
 </script>
 
 <svelte:head>
@@ -82,6 +93,7 @@
 	}
 </style>
 
-<p>please wait...</p>
+<button bind:this={prepareButton} on:click={() => prepare()} hidden>button</button>
+<p bind:this={thanks} hidden>thank you!</p>
 
 <div id={ytPlayerId} style="display: none"></div>
