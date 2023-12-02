@@ -29,7 +29,7 @@
 <p></p>
 
 {id} {datetime}
-
+<a href="{link}">{link}</a>
 <!-- eslint-disable-next-line svelte/no-at-html-tags -->
 {@html svg}
 
