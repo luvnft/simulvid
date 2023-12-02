@@ -35,7 +35,7 @@
 	export let player;
 	export let prepareButton: HTMLButtonElement;
 	export let initialVideoId = params.get("v") || "dQw4w9WgXcQ";
-	const startTime = Number(params.get("t")) || new Date().getTime() + 5000;
+	const startTime = Number(params.get("t")) || new Date().getTime() + 8000;
 
 	const ytPlayerId = "youtube-player"
 
@@ -47,7 +47,8 @@
 				videoId: initialVideoId,
 				playerVars: { autoplay: 0 },
 				events: {
-					"onReady": onPlayerReady
+					"onReady": onPlayerReady,
+					"onStateChange": onStateChange
 				}
 			});
 		}
@@ -58,10 +59,21 @@
 			getSyncedServerTime().then(syncedServerTime => {
 				console.log(syncedServerTime);
 				setTimeout(() => {
+					event.target.unMute();
 					event.target.playVideo();
 					event.target.g.style.display = "block";
+					setTimeout(() => {
+						event.target.seekTo(1)
+					}, 1000)
 				}, startTime - syncedServerTime.getTime());
 			});
+		}
+
+		function onStateChange(state) {
+			console.debug(state);
+			if(state == 3) {
+				player.pauseVideo();
+			}
 		}
 
 		if (window.YT) {
@@ -74,8 +86,12 @@
 
 	export let thanks;
 	function prepare() {
+		player.mute();
 		player.playVideo();
-		player.pauseVideo();
+		setTimeout(() => {
+			player.seekTo(0);
+			player.pauseVideo();
+		}, 100);
 		thanks.removeAttribute("hidden");
 	}
 </script>
