@@ -34,6 +34,7 @@
 
 	export let player;
 	export let prepareButton: HTMLButtonElement;
+	export let countdownElement: HTMLParagraphElement;
 	export let initialVideoId = params.get("v") || "dQw4w9WgXcQ";
 	const startTime = Number(params.get("t")) || new Date().getTime() + 8000;
 
@@ -57,15 +58,31 @@
 
 			getSyncedServerTime().then(syncedServerTime => {
 				console.log(syncedServerTime);
+
+				const now = new Date().getTime();
+				let timeToWait = startTime - syncedServerTime.getTime();
+
 				setTimeout(() => {
+					event.target.playVideo();
 					event.target.seekTo(0);
 					event.target.unMute();
-					event.target.playVideo();
 					event.target.g.style.display = "block";
 					setTimeout(() => {
 						event.target.seekTo(2)
 					}, 2000)
-				}, startTime - syncedServerTime.getTime());
+				}, timeToWait);
+
+				const countdown = setInterval(() => {
+					let timeLeft = now + timeToWait - new Date().getTime()
+
+					if (timeLeft <= 0) {
+						timeLeft = 0;
+						clearInterval(countdown);
+					}
+
+					countdownElement.textContent = (timeLeft / 1000).toFixed(2);
+
+				}, 10)
 			});
 		}
 
@@ -79,8 +96,8 @@
 
 	export let thanks;
 	function prepare() {
-		player.mute();
 		player.playVideo();
+		player.mute();
 		setTimeout(() => {
 			player.pauseVideo();
 		}, 1000);
@@ -101,7 +118,11 @@
 	}
 </style>
 
+<div id="countdown">
+	<p bind:this={countdownElement}></p>
+</div>
+
 <button bind:this={prepareButton} on:click={() => prepare()} hidden>button</button>
 <p bind:this={thanks} hidden>thank you!</p>
 
-<div id={ytPlayerId} style="display: none"></div>
+<div id={ytPlayerId} style="display: none" playsinline></div>
