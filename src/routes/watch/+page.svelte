@@ -48,7 +48,6 @@
 				playerVars: { autoplay: 0 },
 				events: {
 					"onReady": onPlayerReady,
-					"onStateChange": onStateChange
 				}
 			});
 		}
@@ -63,17 +62,10 @@
 					event.target.playVideo();
 					event.target.g.style.display = "block";
 					setTimeout(() => {
-						event.target.seekTo(1)
-					}, 1000)
+						event.target.seekTo(2)
+					}, 2000)
 				}, startTime - syncedServerTime.getTime());
 			});
-		}
-
-		function onStateChange(state) {
-			console.debug(state);
-			if(state == 3) {
-				player.pauseVideo();
-			}
 		}
 
 		if (window.YT) {
@@ -91,7 +83,7 @@
 		setTimeout(() => {
 			player.seekTo(0);
 			player.pauseVideo();
-		}, 100);
+		}, 1000);
 		thanks.removeAttribute("hidden");
 	}
 </script>
