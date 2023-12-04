@@ -1,3 +1,8 @@
+/*
+Called in /src/routes/watch.
+Based on https://stackoverflow.com/a/15785110/10873246.
+*/
+
 export const config = {
 	runtime: 'edge',
 };

@@ -6,6 +6,10 @@
 
 	console.log("hi", params.get("v"), params.get("t"));
 
+	/**
+	Calls /api/getdatetimejson.ts.
+	Based on https://stackoverflow.com/a/15785110/10873246.
+	**/
 	async function getSyncedServerTime(): Promise<Date> {
 		const clientTimestamp = new Date().getTime();
 
@@ -27,18 +31,25 @@
 					return syncedServerTime;
 				});
 		} catch(error) {
-			console.error(error);
-			return null;
+			// I've never tested this part.
+			console.error("Error thrown, falling back to system time.", error);
+			return new Date();
 		}
 	}
 
-	export let player;
+	export let player: YT.Player;
+	const ytPlayerId = "youtube-player"
 	export let prepareButton: HTMLButtonElement;
 	export let countdownElement: HTMLParagraphElement;
-	export let initialVideoId = params.get("v") || "dQw4w9WgXcQ";
+
+	/** What video to play, Rick Astley - Never Gonna Give You Up if unspecified. */
+	const initialVideoId = params.get("v") || "dQw4w9WgXcQ";
+	/** When to start the video, 8 seconds after system time if unspecified.*/
 	const startTime = Number(params.get("t")) || new Date().getTime() + 8000;
 
-	const ytPlayerId = "youtube-player"
+	if (initialVideoId.length > 11) {
+		throw new Error("YouTube video IDs shouldn't be that long!")
+	}
 
 	onMount(() => {
 		function load() {
@@ -53,15 +64,16 @@
 			});
 		}
 
-		function onPlayerReady(event) {
+		function onPlayerReady(event: YT.PlayerEvent) {
 
 			getSyncedServerTime().then(syncedServerTime => {
-				console.log(syncedServerTime);
+				console.log("syncedServerTime", syncedServerTime);
 
 				const now = new Date().getTime();
 				let timeToWait = startTime - syncedServerTime.getTime();
 				prepareButton.removeAttribute("hidden");
 
+				/** The actual timer until the video plays. */
 				setTimeout(() => {
 					event.target.playVideo();
 					event.target.unMute();
@@ -69,6 +81,7 @@
 					event.target.g.style["z-index"] = "3";
 				}, timeToWait);
 
+				/** For the visible countdown on the page. */
 				const countdown = setInterval(() => {
 					let timeLeft = now + timeToWait - new Date().getTime()
 
@@ -91,12 +104,13 @@
 	});
 
 
-	export let thanks;
+	export let thanks: HTMLParagraphElement;
+	/** Called on user interaction to allow autoplay (and buffers a bit of the video, maybe). */
 	function prepare() {
 		player.playVideo();
 		player.mute();
 		setTimeout(() => {
-			player.seekTo(0);
+			player.seekTo(0, false);
 			player.pauseVideo();
 		}, 1000);
 		thanks.removeAttribute("hidden");
