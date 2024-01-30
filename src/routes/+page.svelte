@@ -1,79 +1,70 @@
-<script lang="ts">
-	import {page} from "$app/stores";
-	import {DateInput} from "date-picker-svelte";
-	import QRCode from "qrcode-svg";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>simulvid</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
 
-	const base = $page.url.host;
-	console.debug(base);
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
-	export let link = " ";
-	export let svg = "";
+        .video-container {
+            margin-bottom: 20px;
+        }
 
-	export let id = "dQw4w9WgXcQ";
-	export let datetime = new Date();
+        .video-player {
+            width: 100%;
+        }
 
-	// You might have to change this to http:// in your browser in a local environment.
-	$: link = `https://${base}/watch?v=${id}&t=${datetime.getTime()}`;
-	$: svg = new QRCode(link).svg();
-</script>
+        .video-info {
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+        }
 
-<style>
-* {
-	margin: 0;
-}
-body {
-	max-width: 96ch;
-	margin: 2em auto;
-}
+        .video-title {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
 
-body > * + * {
-	margin-top: 1em;
-}
+        .video-description {
+            font-size: 16px;
+        }
 
-:global(input) {
-	border: 1px solid #000a !important;
-	border-radius: 1px !important;
-	padding: 0.125em 0.25em !important;
-}
-:global(label) {
-	display: block;
-}
-
-:global(label > *) {
-	display: inline;
-}
-</style>
-
+        .debug-info {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
 <body>
-	<header>
-		<h1>simulvid</h1>
-		<p>a project by 12beesinatrenchcoat for a hackathon / <a href="https://github.com/12beesinatrenchcoat/simulvid">source code</a></p>
-	</header>
-	<form>
-		<h2>settings</h2>
-		<label>
-			youtube video id
-			<input type="text" name="id" bind:value={id} id="" maxlength="11">
-		</label>
-
-		<!-- svelte-ignore a11y-label-has-associated-control -->
-		<label>
-			date
-			<DateInput bind:value={datetime}/>
-		</label>
-	</form>
-
-	<div>
-		<h2>output</h2>
-		<p>
-			link: <a href="{link}">{link}</a>
-		</p>
-		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-		{@html svg}
-	</div>
-
-	<div>
-		<h2>debug</h2>
-		{id} {datetime}
-	</div>
+    <div class="container">
+        <div class="video-container">
+            <!-- Video Player -->
+            <iframe class="video-player" width="100%" height="500" src="https://www.youtube.com/embed/{video_id}" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div class="video-info">
+            <!-- Video Title -->
+            <h1 class="video-title">simulvid</h1>
+            <!-- Video Description -->
+            <p class="video-description">Frenvid is a web app that lets you play videos on multiple devices at the same time.</p>
+        </div>
+        <!-- Debug Info -->
+        <div class="debug-info">
+            {id} {datetime}
+        </div>
+    </div>
 </body>
+</html>
